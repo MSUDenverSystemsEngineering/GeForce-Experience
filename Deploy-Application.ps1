@@ -168,14 +168,19 @@ Try {
         }
 
         ## <Perform Installation tasks here>
-        Execute-Process -Path "$dirFiles\GeForce_Experience_v3.27.0.112.exe" -Parameters "/S" -WindowStyle "Hidden" -PassThru
+        Execute-Process -Path "$dirFiles\Setup.exe" -Parameters "-s -noreboot -noeula -nofinish -clean -passive" -WindowStyle "Hidden" -PassThru
         ##*===============================================
         ##* POST-INSTALLATION
         ##*===============================================
         [String]$installPhase = 'Post-Installation'
 
         ## <Perform Post-Installation tasks here>
-
+		If (Test-Path "$env:Public\Desktop\GeForce Experience.lnk") {
+			Remove-Item "$env:Public\Desktop\GeForce Experience.lnk" -Force
+		}
+		Else {
+			Write-Log -Message "Shortcut not detected." -Source 'Pre-Installation' -LogType 'CMTrace'
+		}
         ## Display a message at the end of the install
         ## See original PSADT Deploy-Application.ps1 file from GitHub if you want to use this feature
     }
@@ -211,7 +216,7 @@ Try {
         $command = '"C:\Windows\SysWOW64\RunDll32.EXE" "C:\Program Files\NVIDIA Corporation\Installer2\InstallerCore\NVI2.DLL",UninstallPackage Display.GFExperience -silent'
 
         # Execute the command using the toolkit's function
-        Execute-Process -Path "cmd.exe" -Parameters "/c $command" -WindowStyle "Hidden" -PassThru
+        Execute-Process -Path "$envSystem32Directory\cmd.exe" -Parameters "/c $command" -WindowStyle "Hidden" -PassThru
 
         ##*===============================================
         ##* POST-UNINSTALLATION
@@ -278,8 +283,8 @@ Catch {
 # SIG # Begin signature block
 # MIImVAYJKoZIhvcNAQcCoIImRTCCJkECAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCC1crHI5cFzOqwZ
-# VtUAj+Vhq66BZu39kHA9uuD+3sUt/qCCH8AwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCQ/UpLEr/3IDmQ
+# cR+qjqyqwDF1FbAzt0ZS39MBQqAqg6CCH8AwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -453,32 +458,32 @@ Catch {
 # MSswKQYDVQQDEyJTZWN0aWdvIFB1YmxpYyBDb2RlIFNpZ25pbmcgQ0EgUjM2AhEA
 # pU3fcPvc8UxUgrjysXLKMTANBglghkgBZQMEAgEFAKCBhDAYBgorBgEEAYI3AgEM
 # MQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQB
-# gjcCAQsxDjAMBgorBgEEAYI3AgEVMC8GCSqGSIb3DQEJBDEiBCA42jf3qlBajKh7
-# cxqtkfPmifyM7EuDcPZXMvP+7O4AdjANBgkqhkiG9w0BAQEFAASCAYBsnwe1guIO
-# 8/jlnnAjlFTSkDuYPRa2yCw0OqTCpQQ4HK4ww7Kph+l1TitpswWQIqrn6yBX83Ob
-# O+LemnkrE9CUfGN5YNcuxzWWHw+s6OtH8YpguJYPZSYvXwN1Gr3ddAlgyxSkL6rF
-# kVOly3S/Yq8Vb0+HjtDS8h541pWb8WSAY8Xr+YQU1wIDqriwbAyBfGjOmmWv7n98
-# LHS8U52X5GH31XSIYA/9FgdM8pKxb883D/9Fj7GrZRpeZ62cm43dLU5FNihZJ7UH
-# BfFed1k3SeK7JZPsT91+JScJ9DnASoAAoufuOK9E5OOlugHRCe3HWVj1sABxGgSC
-# h+Z8HQoXa1DAMqNI9/novlLln67XpBxkwVDRnypZpHtdW8lsN550likJKxxX0nHV
-# tpRLi3ET5+WNhlFSE8eiugxUirBfISJmqCiAPl9UR4iAXf953m4hwEywBT7+C4JK
-# D8ALwe9W2VZzXQlcihEZdaGiwLEtfMRB9PLdgDDiHwuy2q1YvxT1QYShggNLMIID
+# gjcCAQsxDjAMBgorBgEEAYI3AgEVMC8GCSqGSIb3DQEJBDEiBCDqYDo63f803Qx/
+# BjjgjeGB35jOaqS2eiKrtlNqhxdaBjANBgkqhkiG9w0BAQEFAASCAYBDvIo0Pd7z
+# QWWb7Rj5Dvq447ACA8xCW489AITMbMwo5ofXbwfhAwGEaUI6RbyNkfWzQwnysdnE
+# nRJBVLzT2qFWsEWFeyImiY8XMc2FDJ5guPgYqqx30axc2E4W0sb4+BT4dX3f8oma
+# rNS/cIOnFtroTBbS9dpFDmRmImnT2OHeUtHt0J/Jc0i8rCphuIw3yot+IFj45Eng
+# ukf07u8hyJL+Pbhra/FKPoVuudTW+ix5yl5MN7omkqDn+dk/6+qEwKHpvrDuFBUP
+# ZCMssc606YSg2ERdHEt06OtCVDoFasRXe7+KYJv4HoaElkQj/M0UmpGs5LKQdMqZ
+# 0tqSntnUP10SzyoSHThDOlWLypE7YKV6TyJ+7jd1LEpMSjgV9e2P/d35sVRoMqMx
+# Uq85n+msG1B5VlusmuZeekMaGAfaKPR8OFL7AB6B0yb0YQJi5o7tQSeua+BHrulE
+# X4+QoX/yZGzYy8LQapXpBGgBs00tvNO+fkjF024QM96reJP322t6fmOhggNLMIID
 # RwYJKoZIhvcNAQkGMYIDODCCAzQCAQEwgZEwfTELMAkGA1UEBhMCR0IxGzAZBgNV
 # BAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYGA1UE
 # ChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYDVQQDExxTZWN0aWdvIFJTQSBUaW1lIFN0
 # YW1waW5nIENBAhA5TCXhfKBtJ6hl4jvZHSLUMA0GCWCGSAFlAwQCAgUAoHkwGAYJ
-# KoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwNTEwMTg1
-# NjI2WjA/BgkqhkiG9w0BCQQxMgQwMvC0By8oSpe/WE2F6S9exyVr2NbC3gvU/Zjw
-# Bob6OtFEH3YMnFqbKhAVUxCPp7Q5MA0GCSqGSIb3DQEBAQUABIICAIuiVLkIW/hP
-# xeGWMWyY8w37pkdnIwjzjFULXOLCxkmyOgRZazrQqKfAfWSEg0lr9vcZw8VNs8LQ
-# CAOgH/MxiS8VeA5eTEa5SzvNwfHmzw1OE3pJnGjJLqRMZEJt/TQpOgqCwz5Y9vxk
-# 7tV8n1UvH3BlE6OmnxIBZ2SANhFnVr05xoDvgqGczrPFeJZqRcdUXIAP1RZlfMTa
-# etUhrlrycC1H5cBvC42aSzf3fqDahkaTrXMOw8Af+hqTl9kIHlPg7BjM4RgnjvaJ
-# W2Jk8pT6OjVcYkAILW6lZqx9qgyb0QAA6nOf6TkfIvnP+K03fiN2DU2ZId2OuYqC
-# 1l2RUhLqNKSK7xe0v0OEa0CVMIRxTcsoUqnmwBD2nJm/svKcp0yrdXsYJMNxfkie
-# 3cYxQbq6HpmZtCsp0VaNSEWB0Q+/Eo9YVdNZbirz+js6+HIs2kxxt/jFeF8oNJ51
-# AVl+5p9S214myRkPZPyPNSheqhUpCTmkliY3xbcAugiyzhp0vR3G2h0bXaoAd1P9
-# yZTgp7AZpxXvlMSvSpDD0UiRao48mtwuKyZaoVJHZ/lnGQWrIIPTuOVGfKK287C7
-# M1oePRU3eBryULvo86oBm5xt1THR3IvnOkL+JJIJsRtzX69jacC40++pGeAi9sjh
-# EyBPkrc19bLH9fb3Dz0qzTrQhBNfaFTi
+# KoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwNTEwMjAx
+# NjIzWjA/BgkqhkiG9w0BCQQxMgQwYsv24kY6OnIchhrol2aWXY7XrxedaoP7opRF
+# vmR5OGe2PatK0zBAf3mIGo2jL8bJMA0GCSqGSIb3DQEBAQUABIICAJgnkCqb21yS
+# tkheFLWLdmnm+5ujn+txpmy4R4tWd1MzO5jW+D30recsVyYyWSvHO1Q0R2sT+07/
+# 4obWLSu1b2ZXOZTXjgoSgBaSH907aXL4BACmKlCb346CH7zOiLLf6MtuPtXPXjy2
+# d+T6eY5Bccd+P4xy4pCWAY6wD9dpgSoJiSMAVZ3asix0eNLQEtTo6sQe374xxvSy
+# Tj5S4l+Zji7X8nqaEqrkIuddBUIaqkuu59gSNiimIeGSluSeBOzRtZqX9DUAQnL6
+# 7zmLT8NTiZGOohRus1o7KxliA3GLOklo6X0NUEAFTeEJeku/6oWoG8ti0vgjqXIP
+# /MP2hO/7KKD0ISCfPZnynf17LyZo+PvhfGCElpevDnJ13uKJuIZcuQLJRemTevdf
+# /O8shVBpjmfV/RCPPxrUVI0S/xoTdMK0nCHl1kjX60DskGSut1B5fPWct6uFr5rx
+# IZI8SGbtonQpW9PoFwDZMocIgFbd0McppVn0C6bBrRmWzjwjCtiirbj+AsAUpzpG
+# FiyTGpoCAc1As+34GCuzbZTnoo5z9q7EaYorZ7zYNJCc8sRoGy92eeJuYqWCOJk3
+# D0l3LSJWj1hYqYsKxTZCkUfSEPO2d9wVsSmq88352tsdhn39lamQqQ4d0dOK35P7
+# w3T0JPMo9A21lRc/n2ljkcpdXNvfvnIY
 # SIG # End signature block
